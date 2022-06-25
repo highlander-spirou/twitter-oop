@@ -1,31 +1,80 @@
-import random
-import string
 from getpass import getpass
 
-def create_random():
-    strings = list(string.ascii_letters + string.digits)
-    password = []
-    for i in range(8):
-        password.append(random.choice(strings))
-    return "".join(password)
-
-class Database:
+class Twitter:
     def __init__(self) -> None:
-        self.db = []
-        
+        self.__login_state = False
+        self.__current_user = None
     
-
+    @property
+    def login_state(self):
+        return self.__login_state
+    
+    @property
+    def current_user(self):
+        return self.__current_user
+    
+    @current_user.setter
+    def set_current_user(self, user):
+        self.__current_user = user
+    
+    def login(self, username):
+        self.__login_state = username
+        
+    def logout(self):
+        self.__login_state = False
+        
+        
 
 class User:
-    def __init__(self, username, password) -> None:
-        self.username = username
-        self.id = create_random()
-        self.password = password
-        
-    def welcome_statement(self):
-        print(f'Create new user {self.username} with ID: {self.id}')
+    def __init__(self) -> None:
+        pass
         
     
+
+class LoginDb:
+    def __init__(self) -> None:
+        self.__users = {}
+    
+    def create_user(self, username, password):
+        if self.search_username(username) is False:
+            new_user = User()
+            print(f'Create new user {username}')
+            self.add_user(username, password, new_user)
+        else:
+            print('This username has been taken, please use another username')
+     
+    def search_username(self, username:str) -> bool:
+        keys = [i[0] for i in self.__users.keys()]
+        if username in keys:
+            return True
+        else:
+            return False
+    
+    def add_user(self, username, password, user:User):
+        self.__users[(username, password)] = user
+        
+    def query_user(self, username, password):
+        try:
+            return self.__users[(username, password)]
+        except Exception:
+            return None
+        
+    def change_password(self, username, old_password):
+        user_obj = self.query_user(username, old_password)
+        if user_obj is not None:
+            new_password = getpass(prompt='Please enter your new password: ')
+            self.__users.pop((username, old_password))
+            self.add_user(username, new_password, user_obj)
+            print('Successfully reset your password')
+            return True
+        else:
+            print('Incorrect old password, please try again')
+            return False
+        
+
+
+
+
 
 def postTweet(userID, tweetBody):
     pass
@@ -38,58 +87,3 @@ def follow():
 
 def unfollow():
     pass
-
-
-class InvalidInput(Exception):
-    def __init__(self, input) -> None:
-        self.input = input
-        self.message = f'{input} is not a valid input, please between 1 to 3'
-        super().__init__(self.message)
-
-OPTIONS_RANGE = [1, 2, 3]
-IS_CONTINUE = True
-option_statement = """
-    Type the number to:
-    1. Sign Up
-    2. Sign In
-    3. Log out (end the program)
-    You are typing: 
-"""
-
-def sign_up_user(username, password):
-    new_user = User(username, password)
-    new_user.welcome_statement()
-    return new_user
-
-def run_program():
-    while True:
-        option_selection = input(option_statement)
-        try:
-            if int(option_selection) in OPTIONS_RANGE:
-                if int(option_selection) == 1:
-                    print('You are in sign up menu')
-                    username = input('Please enter your username: ')
-                    password = getpass(prompt='Please enter your password: ')
-                    sign_up_user(username, password)
-                    break
-                if int(option_selection) == 2:
-                    username = input('Please enter your username: ')
-                    password = getpass(prompt='Please enter your password: ')
-                    print(username, password)
-                if int(option_selection) == 3:
-                    global IS_CONTINUE
-                    IS_CONTINUE = False
-                    break
-            else:
-                raise InvalidInput(option_selection)
-        except InvalidInput as e:
-            print(e.message)
-        except ValueError:
-            print('Please type a number between 1 and 3')
-        
-    
-    
-if __name__ == '__main__':
-    Quit = input('Welcome to Twitter 🐦 \n Press Enter to continue \n Press Q to Quit')
-    while Quit != "q" and IS_CONTINUE:
-        run_program()
