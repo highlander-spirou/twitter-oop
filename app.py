@@ -1,41 +1,25 @@
-from Twitter import Twitter, LoginDb
+from Twitter import Twitter, LoginDb, FollowMap
 from menu_functions import Menu
 from constants import OPTION_MENU, SELECTION_OPTIONS
 from errors import InvalidInput
-from helpers import create_random
+
+IS_CONTINUE = True
 
 app = Twitter()
 login_db = LoginDb()
-menu = Menu(app, login_db)
-IS_CONTINUE = True
+follow_graph = FollowMap()
+menu = Menu(app, login_db, follow_graph)
+
 
 def run_program():
     while True:
-        global login_db
-        if app.login_state is False:
-            option_selection = input(OPTION_MENU['welcome'])
-            try:
-                if int(option_selection) in SELECTION_OPTIONS['welcome']:
-                    if int(option_selection) == 1:
-                        menu.sign_up_menu()
-                        break
-                    if int(option_selection) == 2:
-                        menu.sign_in_menu()
-                    if int(option_selection) == 3:
-                        global IS_CONTINUE
-                        IS_CONTINUE = False
-                        break
-                else:
-                    raise InvalidInput(option_selection)
-            except InvalidInput as e:
-                print(e.message)
-            except ValueError:
-                print('Please type a number between 1 and 3')
-        else:
-            menu.sign_in_menu()
+        return menu.landing_page()
+        
 
 if __name__ == '__main__':
     user1 = login_db.create_user('nhan', '1')
+    user2 = login_db.create_user('nhu', '1')
     Quit = input('Welcome to Twitter 🐦 \n Press Enter to continue \n Press Q to Quit')
     while Quit != "q" and IS_CONTINUE:
-        run_program()
+        state = run_program()
+        IS_CONTINUE = state

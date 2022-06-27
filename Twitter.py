@@ -1,35 +1,58 @@
 from getpass import getpass
+from dataclasses import dataclass, field
+from typing import List, Literal, Tuple
+from helpers import create_random
+from Graph import Graph, Edge
 
-class Twitter:
-    def __init__(self) -> None:
-        self.__login_state = False
-        self.__current_user = None
+  
+class Tweets:
+    pass
+      
+@dataclass
+class TweetsList:
+    __tweets_list:List[Tuple[str, str, Tweets]] = field(default_factory=list)
     
-    @property
-    def login_state(self):
-        return self.__login_state
+    def get_tweets_by_user_name(self, username):
+        re = [i[1] for i in self.__tweets_list if i[1] == username]
+        return re
     
-    @property
-    def current_user(self):
-        return self.__current_user
-    
-    @current_user.setter
-    def set_current_user(self, user):
-        self.__current_user = user
-    
-    def login(self, username):
-        self.__login_state = username
-        
-    def logout(self):
-        self.__login_state = False
-        
-        
-
-class User:
-    def __init__(self) -> None:
+    def queue_to_tweet_list(self, username, tweets:Tweets):
+        tweet_id = create_random()
         pass
-        
     
+ 
+class FollowMap:
+    def __init__(self) -> None:
+        self.__follow_map = Graph()
+        
+    def add_follow(self, followee, follower):
+          self.__follow_map.add_edge(Edge((followee, follower))) 
+          print(f'You have start following {follower}') 
+    
+    def get_following_list(self, name):
+        return self.__follow_map.get_connected_node(name)
+    
+    def get_follower_list(self, name, type_of:Literal['set', 'str']='set'):
+        if type_of == 'set':
+            return self.__follow_map.get_connected_to_node(name)
+        elif type_of == 'str':
+            return ', '.join(list(self.__follow_map.get_connected_to_node(name)))
+
+@dataclass()
+class User:
+    def __post_init__(self):
+        tweets: List[Tweets] = field(default_factory=list)
+        
+        
+    def show_tweets(self):
+        if len(self.tweets) == 0:
+            print('You have no tweets to show, please add some tweets')
+        else:
+            return '\n'.join(self.tweets)
+    
+
+
+
 
 class LoginDb:
     def __init__(self) -> None:
@@ -72,6 +95,28 @@ class LoginDb:
             return False
         
 
+class Twitter:
+    def __init__(self) -> None:
+        self.__current_user = None
+        self.__user_obj = None
+    
+    @property
+    def current_user(self):
+        return self.__current_user
+    
+    @property
+    def user_obj(self):
+        return self.__user_obj
+    
+    @user_obj.setter
+    def set_user_obj(self, user:User):
+        self.__user_obj = user
+    
+    def login(self, username:str):
+        self.__current_user = username
+        
+    def logout(self):
+        self.__current_user = None
 
 
 
