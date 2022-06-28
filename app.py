@@ -19,6 +19,7 @@ def run_program():
 if __name__ == '__main__':
     user1 = login_db.create_user('nhan', '1')
     user2 = login_db.create_user('nhu', '1')
+    user2 = login_db.create_user('map', '1')
     Quit = input('Welcome to Twitter 🐦 \n Press Enter to continue \n Press Q to Quit')
     while Quit != "q" and IS_CONTINUE:
         state = run_program()

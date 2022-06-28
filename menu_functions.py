@@ -2,32 +2,33 @@ from getpass import getpass
 from constants import OPTION_MENU, SELECTION_OPTIONS
 from errors import InvalidInput
 from Twitter import Twitter, LoginDb, FollowMap
+from sign_in_methods.landing import landing_page
+from sign_in_methods.login_prompt import login_prompt
+from sign_in_methods.follow_menu import follow_menu
+from helpers import register_method
 
-class Menu:
+class MenuWrapper:
     def __init__(self, app:Twitter, login_db:LoginDb, follow_map:FollowMap) -> None:
         self.__app = app
         self.__login_db = login_db
         self.__follow_map = follow_map
+
+    @property
+    def get_app(self):
+        return self.__app
+    @property
+    def get_db(self):
+        return self.__login_db
+    @property
+    def get_map(self):
+        return self.__follow_map
+
+
+@register_method((landing_page, login_prompt, follow_menu))
+class Menu(MenuWrapper):
+    def __init__(self, app: Twitter, login_db: LoginDb, follow_map: FollowMap) -> None:
+        super().__init__(app, login_db, follow_map)
     
-    def landing_page(self):
-        if self.__app.current_user is None:
-            option_selection = input(OPTION_MENU['welcome'])
-            try:
-                if int(option_selection) in SELECTION_OPTIONS['welcome']:
-                    if int(option_selection) == 1:
-                        self.sign_up_menu()
-                    if int(option_selection) == 2:
-                        self.sign_in_menu()
-                    if int(option_selection) == 3:
-                        return False
-                else:
-                    raise InvalidInput(option_selection)
-            except InvalidInput as e:
-                print(e.message)
-            except ValueError:
-                print('Please type a number between 1 and 3')
-        else:
-            self.sign_in_menu()
     
     def sign_up_menu(self): 
         print('You are in sign up menu')
@@ -38,39 +39,21 @@ class Menu:
     
     def sign_in_menu(self):
         while True:
-            current_user = self.__app.current_user
+            current_user = self.get_app.current_user
             if current_user is None:
-                username = input('Please enter your username: ')
-                password = getpass(prompt='Please enter your password: ')
-                user = self.__login_db.query_user(username, password)
-                if user is None:
-                    print('Username or password is invalid, please try again')
-                else:
-                    self.__app.login(username)
-                    self.sign_in_menu()
+                self.login_prompt()
             else:
-                print(f'Welcome {current_user}')
-                option_selection = input(OPTION_MENU['login'])
+                print(f'\n Welcome {current_user}')
+                option_selection = input('\n ------ \n' + OPTION_MENU['login'])
                 try:
                     if int(option_selection) in SELECTION_OPTIONS['login']:
                         if int(option_selection) == 1:
-                            print("Latest feeds")
+                            print("\n \n Latest feeds")
                             return 
                         elif int(option_selection) == 2:
-                            print("Following list")
-                            print(self.__follow_map.get_following_list(current_user))
-                            option_selection = input(OPTION_MENU['following'])
-                            if int(option_selection) == 1:
-                                user = input('Please type the username to follow: ')
-                                if self.__login_db.search_username(user) is True:
-                                    self.__follow_map.add_follow(current_user, user)
-                                    print(f'✔ Follow user {user} ')
-                                else:
-                                    print(f'User {user} does not exists, please try a valid username')
-                                    
+                            self.follow_menu()
                         elif int(option_selection) == 3:
-                            print("Follower list")
-                            print(f'Your Follower list: {self.__follow_map.get_follower_list(current_user, "str")}')
+                            print("Depricated")
                         elif int(option_selection) == 4:
                             print("Change password menu")
                             old_password = getpass(prompt='Please enter your old password: ')

@@ -47,7 +47,12 @@ class Graph:
                 nodes.add(index)
                 
         return nodes
-                
+
+    def remove_edge(self, start, stop) -> str:
+        if start in self.graph_dict:
+            if stop in self.graph_dict[start]:
+                self.graph_dict[start].remove(stop)
+                return stop
    
    
    

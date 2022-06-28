@@ -1,3 +1,3 @@
 #!/bin/bash
 
-python Twitter.py
+cat input.txt | python3 app.py > output.txt

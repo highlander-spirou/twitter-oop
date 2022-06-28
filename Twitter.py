@@ -27,7 +27,6 @@ class FollowMap:
         
     def add_follow(self, followee, follower):
           self.__follow_map.add_edge(Edge((followee, follower))) 
-          print(f'You have start following {follower}') 
     
     def get_following_list(self, name):
         return self.__follow_map.get_connected_node(name)
@@ -37,6 +36,13 @@ class FollowMap:
             return self.__follow_map.get_connected_to_node(name)
         elif type_of == 'str':
             return ', '.join(list(self.__follow_map.get_connected_to_node(name)))
+
+    def unfollow_user(self, start, stop):
+        re = self.__follow_map.remove_edge(start, stop)
+        if re is not None:
+            print(f'Unfollow {re}')
+        else:
+            print('Cannot unfollow this user, neither follow or the username is correct')
 
 @dataclass()
 class User:
