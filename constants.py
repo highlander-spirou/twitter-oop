@@ -5,12 +5,14 @@ class OptionMenu(TypedDict):
     login:str
     follow:str
     follower:str
+    tweet_menu:str
     
 class SelectionOptions(TypedDict):
     welcome:list
     login:list
     follow:list
     follower:str
+    tweet_menu:str
 
 
 OPTION_MENU: OptionMenu = {
@@ -24,9 +26,8 @@ You are typing: """,
 Type the number to:
 1. View feeds
 2. View follow menu
-3. Depricated
-4. Change password
-5. Log out (Return to main menu)
+3. Change password
+4. Log out (Return to main menu)
 You are typing: """,
     'follow': """
 Type the number to:
@@ -40,11 +41,19 @@ Type the number to:
 2. Unfollow User
 3. Go back
 You are typing: """,
+    'tweet_menu': """
+Type the number to:
+1. Post Tweets
+2. Unfollow User
+3. Go back
+You are typing: """,
+
 }
 
 SELECTION_OPTIONS: SelectionOptions = {
     'welcome': [1,2,3],
-    'login': [1,2,3,4,5],
+    'login': [1,2,3,4],
     'follow': [1,2,3],
     'follower': [1,2,3],
+    'tweet_menu': [1,2,3],
 }

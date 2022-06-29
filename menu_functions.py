@@ -53,19 +53,17 @@ class Menu(MenuWrapper):
                         elif int(option_selection) == 2:
                             self.follow_menu()
                         elif int(option_selection) == 3:
-                            print("Depricated")
-                        elif int(option_selection) == 4:
                             print("Change password menu")
                             old_password = getpass(prompt='Please enter your old password: ')
                             result = self.__login_db.change_password(current_user, old_password)
                             if result is True:
                                 self.__app.logout()
-                        elif int(option_selection) == 5:
+                        elif int(option_selection) == 4:
                             self.__app.logout()
                     else:
                         raise InvalidInput(option_selection)
                 except InvalidInput as e:
                     print(e.message)
                 except ValueError:
-                    print('Please type a number between 1 and 5')
+                    print('Please type a number between 1 and 4')
                 
