@@ -11,6 +11,21 @@ class Node:
     def __str__(self):
         return str(self.data)
 
+class LinkedListIterator:
+    def __init__(self, head:Node):
+        self.current = head
+
+    def __iter__(self):
+        return self
+
+    def __next__(self):
+        if not self.current:
+            raise StopIteration
+        else:
+            returned_node = self.current
+            self.current = self.current.next_node
+            return returned_node
+
 class ReverseLinkedList:
     """
     This class implement a reverse linked list, aka a stack
@@ -38,23 +53,7 @@ class ReverseLinkedList:
             self.head.next_node = old_head
             self.count += 1
 
-    def __iter__(self):
-        return self
-
-    def __next__(self):
-        try:
-            if self.__index == 0:
-                self.__traversing_node = self.head
-            elif self.__index < self.count:
-                self.__traversing_node = self.__traversing_node.next_node
-            else:
-                raise IndexError
-        except IndexError:
-            raise StopIteration
-        self.__index += 1
-        return self.__traversing_node
-
-
+    
     def traverse_at_n(self, n:int) -> Node:
         """
         Get the element at nth position
@@ -72,6 +71,9 @@ class ReverseLinkedList:
         else: 
 
             raise Exception("Index out of range")
+
+    def __iter__(self):
+        return LinkedListIterator(self.head)
 
     def __repr__(self):
         nodes = []
@@ -115,6 +117,8 @@ if __name__ == '__main__':
     for i in l1:
         print(i)
 
+    for k in l1:
+        print(f'reprinting {k}, make sure no error')
     # l2 = ReverseLinkedList()
     # l2.add(2) # 4
     # l2.add(4) # 3
