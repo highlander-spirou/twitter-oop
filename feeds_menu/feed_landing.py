@@ -18,9 +18,11 @@ def feed_landing(self:Menu):
             tweet_body = input("\n Share your thoughts: ")
             timestamp = datetime(2022, 7,1,0,13)
             self.get_tweets.add_tweet(self.get_app.current_user, tweet_body, timestamp)
-
         if int(option_selection) == 3:
-            pprint("Here's all the tweet that you have posted")
+            pprint("Here's all the tweet that you have posted: ")
+            tweet_list = self.get_tweets.get_tweets_by_name(self.get_app.current_user)
+            print(tweet_list)
+
     else:
         pprint('Please enter a valid input between 1 and 4')
         feed_landing(self)

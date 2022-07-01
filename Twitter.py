@@ -1,7 +1,8 @@
 from datetime import datetime
+from collections import OrderedDict
 from getpass import getpass
 from dataclasses import dataclass, field
-from typing import Dict, Literal
+from typing import Dict, Literal, Optional
 from helpers import create_random
 from Graph import Graph, Edge
 from RLinkedList import ReverseLinkedList
@@ -17,7 +18,7 @@ class Tweet:
 
 @dataclass      
 class TweetList:
-    __tweets:Dict[str, ReverseLinkedList] = field(default_factory=dict)
+    __tweets:Dict[str, ReverseLinkedList] = field(default_factory=OrderedDict)
 
     def add_tweet(self, username, body, timestamp):
         new_tweet = Tweet(body, username)
@@ -28,8 +29,9 @@ class TweetList:
             self.__tweets[username] = tweet_list
         else:
             linked_list.add({str(new_tweet): timestamp})
+        print(f'Tweet added by {username}')
 
-    def get_tweets_by_name(self, name):
+    def get_tweets_by_name(self, name:str):
         return self.__tweets.get(name)
     
  
