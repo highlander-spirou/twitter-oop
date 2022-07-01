@@ -69,8 +69,17 @@ class ReverseLinkedList:
                 i += 1
             return nth_node
         else: 
-
             raise Exception("Index out of range")
+
+    def traverse_to_n(self, start:int, stop:int) -> List[Node]:
+        returned_list = []
+        i = start
+        current = self.traverse_at_n(start)
+        while i <= stop:
+            returned_list.append(current)
+            i+=1
+            current = current.next_node
+        return returned_list
 
     def __iter__(self):
         return LinkedListIterator(self.head)
@@ -114,11 +123,9 @@ if __name__ == '__main__':
     l1.add(4) # 1
     l1.add(5) # 0
 
-    for i in l1:
-        print(i)
 
-    for k in l1:
-        print(f'reprinting {k}, make sure no error')
+    for i in l1.traverse_to_n(1, 3):
+        print(i)
     # l2 = ReverseLinkedList()
     # l2.add(2) # 4
     # l2.add(4) # 3

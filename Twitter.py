@@ -13,8 +13,8 @@ class Tweet:
         self.__tweet_owner = tweet_owner
         self.__tweet_id = create_random()
 
-    def __str__(self) -> str:
-        return self.__tweet_id
+    def __repr__(self) -> str:
+        return f'{self.__tweet_id}: {self.__tweet_body}'
 
 @dataclass      
 class TweetList:
@@ -25,10 +25,10 @@ class TweetList:
         linked_list = self.__tweets.get(username)
         if linked_list is None:
             tweet_list = ReverseLinkedList()
-            tweet_list.add({str(new_tweet): timestamp})
+            tweet_list.add({timestamp: new_tweet})
             self.__tweets[username] = tweet_list
         else:
-            linked_list.add({str(new_tweet): timestamp})
+            linked_list.add({timestamp: new_tweet})
         print(f'Tweet added by {username}')
 
     def get_tweets_by_name(self, name:str):

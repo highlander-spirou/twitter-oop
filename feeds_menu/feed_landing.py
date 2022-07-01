@@ -1,8 +1,9 @@
 from __future__ import annotations
 from constants import OPTION_MENU, SELECTION_OPTIONS
-from helpers import pprint
+from helpers import pprint, extract_dict_values
 from datetime import datetime
 from typing import TYPE_CHECKING
+from feeds_menu.render_tweets import render_tweets
 if TYPE_CHECKING:
     from menu_functions import Menu
 
@@ -21,7 +22,10 @@ def feed_landing(self:Menu):
         if int(option_selection) == 3:
             pprint("Here's all the tweet that you have posted: ")
             tweet_list = self.get_tweets.get_tweets_by_name(self.get_app.current_user)
-            print(tweet_list)
+            for i in render_tweets(tweet_list):
+                print(extract_dict_values(i.data))
+            
+            
 
     else:
         pprint('Please enter a valid input between 1 and 4')

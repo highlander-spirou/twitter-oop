@@ -26,4 +26,7 @@ def pprint(text:str):
     Add extra padding to print function
     """
     print("\n " + text + "\n")
-    
+
+
+def extract_dict_values(d:dict):
+    return next(iter(d.values()))
