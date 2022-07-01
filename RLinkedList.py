@@ -1,3 +1,4 @@
+from re import I
 from typing import List, Optional
 
 
@@ -7,7 +8,7 @@ class Node:
     def __init__(self, data):
         self.data = data
 
-    def __repr__(self):
+    def __str__(self):
         return str(self.data)
 
 class ReverseLinkedList:
@@ -19,6 +20,8 @@ class ReverseLinkedList:
     def __init__(self) -> None:
         self.head: Optional[Node] = None
         self.count: int = 0
+        self.__index = 0
+        self.__traversing_node = None
 
     def is_empty(self):
         return self.head is None
@@ -34,6 +37,22 @@ class ReverseLinkedList:
             self.head = new_node
             self.head.next_node = old_head
             self.count += 1
+
+    def __iter__(self):
+        return self
+
+    def __next__(self):
+        try:
+            if self.__index == 0:
+                self.__traversing_node = self.head
+            elif self.__index < self.count:
+                self.__traversing_node = self.__traversing_node.next_node
+            else:
+                raise IndexError
+        except IndexError:
+            raise StopIteration
+        self.__index += 1
+        return self.__traversing_node
 
 
     def traverse_at_n(self, n:int) -> Node:
@@ -93,22 +112,27 @@ if __name__ == '__main__':
     l1.add(4) # 1
     l1.add(5) # 0
 
-    l2 = ReverseLinkedList()
-    l2.add(2) # 4
-    l2.add(4) # 3
-    l2.add(6) # 2
-    l2.add(8) # 1
+    for i in l1:
+        print(i)
 
-    l3 = ReverseLinkedList()
-    l3.add(1) # 4
-    l3.add(2) # 3
-    l3.add(3) # 2
-    l3.add(5) # 1
-    l3.add(7) # 1
-    l3.add(9) # 1
+    # l2 = ReverseLinkedList()
+    # l2.add(2) # 4
+    # l2.add(4) # 3
+    # l2.add(6) # 2
+    # l2.add(8) # 1
 
-    print(l1, l2, l3, sep = " | ")
+    # l3 = ReverseLinkedList()
+    # l3.add(1) # 4
+    # l3.add(2) # 3
+    # l3.add(3) # 2
+    # l3.add(5) # 1
+    # l3.add(7) # 1
+    # l3.add(9) # 1
 
-    print(compare_linked_list([l1.head, l2.head, l3.head]))
+    # print(l1, l2, l3, sep = " | ")
+
+    # print(compare_linked_list([l1.head, l2.head, l3.head]))
+
+
 
 
