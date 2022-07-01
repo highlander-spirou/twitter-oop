@@ -1,24 +1,36 @@
+from datetime import datetime
 from getpass import getpass
 from dataclasses import dataclass, field
-from typing import List, Literal, Tuple
+from typing import Dict, Literal
 from helpers import create_random
 from Graph import Graph, Edge
+from RLinkedList import ReverseLinkedList
 
-  
-class Tweets:
-    pass
-      
-@dataclass
-class TweetsList:
-    __tweets_list:List[Tuple[str, str, Tweets]] = field(default_factory=list)
-    
-    def get_tweets_by_user_name(self, username):
-        re = [i[1] for i in self.__tweets_list if i[1] == username]
-        return re
-    
-    def queue_to_tweet_list(self, username, tweets:Tweets):
-        tweet_id = create_random()
-        pass
+class Tweet:
+    def __init__(self, tweet_body, tweet_owner) -> None:
+        self.__tweet_body = tweet_body
+        self.__tweet_owner = tweet_owner
+        self.__tweet_id = create_random()
+
+    def __str__(self) -> str:
+        return self.__tweet_id
+
+@dataclass      
+class TweetList:
+    __tweets:Dict[str, ReverseLinkedList] = field(default_factory=dict)
+
+    def add_tweet(self, username, body, timestamp):
+        new_tweet = Tweet(body, username)
+        linked_list = self.__tweets.get(username)
+        if linked_list is None:
+            tweet_list = ReverseLinkedList()
+            tweet_list.add({str(new_tweet): timestamp})
+            self.__tweets[username] = tweet_list
+        else:
+            linked_list.add({str(new_tweet): timestamp})
+
+    def get_tweets_by_name(self, name):
+        return self.__tweets.get(name)
     
  
 class FollowMap:
@@ -46,19 +58,8 @@ class FollowMap:
 
 @dataclass()
 class User:
-    def __post_init__(self):
-        tweets: List[Tweets] = field(default_factory=list)
-        
-        
-    def show_tweets(self):
-        if len(self.tweets) == 0:
-            print('You have no tweets to show, please add some tweets')
-        else:
-            return '\n'.join(self.tweets)
+    pass
     
-
-
-
 
 class LoginDb:
     def __init__(self) -> None:
@@ -125,16 +126,3 @@ class Twitter:
         self.__current_user = None
 
 
-
-
-def postTweet(userID, tweetBody):
-    pass
-
-def getNewFeed():
-    pass
-
-def follow():
-    pass
-
-def unfollow():
-    pass

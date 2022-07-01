@@ -19,3 +19,11 @@ def register_method(functions:Union[callable, tuple]):
             setattr(Class, functions.__name__, functions)
             return Class
     return decorator
+
+
+def pprint(text:str):
+    """
+    Add extra padding to print function
+    """
+    print("\n " + text + "\n")
+    

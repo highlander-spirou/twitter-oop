@@ -1,7 +1,11 @@
+from __future__ import annotations
 from getpass import getpass
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from menu_functions import Menu
 
 
-def login_prompt(self):
+def login_prompt(self:Menu):
     username = input('Please enter your username: ')
     password = getpass(prompt='Please enter your password: ')
     user = self.get_db.query_user(username, password)
@@ -9,4 +13,4 @@ def login_prompt(self):
         print('Username or password is invalid, please try again')
     else:
         self.get_app.login(username)
-        self.sign_in_menu()
+        self.user_menu()

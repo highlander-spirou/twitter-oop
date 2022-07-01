@@ -43,9 +43,10 @@ Type the number to:
 You are typing: """,
     'tweet_menu': """
 Type the number to:
-1. Post Tweets
-2. Unfollow User
-3. Go back
+1. View your feeds
+2. Post a Tweet
+3. View your wall
+4. Go back
 You are typing: """,
 
 }
@@ -55,5 +56,5 @@ SELECTION_OPTIONS: SelectionOptions = {
     'login': [1,2,3,4],
     'follow': [1,2,3],
     'follower': [1,2,3],
-    'tweet_menu': [1,2,3],
+    'tweet_menu': [1,2,3,4],
 }

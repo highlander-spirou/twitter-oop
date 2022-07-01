@@ -1,19 +1,18 @@
-from Twitter import Twitter, LoginDb, FollowMap
+from Twitter import Twitter, LoginDb, FollowMap, TweetList
 from menu_functions import Menu
-from constants import OPTION_MENU, SELECTION_OPTIONS
-from errors import InvalidInput
 
 IS_CONTINUE = True
 
 app = Twitter()
 login_db = LoginDb()
 follow_graph = FollowMap()
-menu = Menu(app, login_db, follow_graph)
+tweet_list = TweetList()
+menu = Menu(app, login_db, follow_graph, tweet_list)
 
 
 def run_program():
     while True:
-        return menu.landing_page()
+        return menu.menu_landing()
         
 
 if __name__ == '__main__':

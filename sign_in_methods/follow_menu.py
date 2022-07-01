@@ -1,7 +1,13 @@
+from __future__ import annotations
 from constants import OPTION_MENU, SELECTION_OPTIONS
+from helpers import pprint
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from menu_functions import Menu
 
 
-def follower_menu(self, current_user):
+
+def follower_menu(self:Menu, current_user):
     print("\nFollowing list: ", self.get_map.get_following_list(current_user))
     option_selection = input(OPTION_MENU['follower'])
     if int(option_selection) in SELECTION_OPTIONS['follower']:
@@ -9,9 +15,9 @@ def follower_menu(self, current_user):
             user = input('Please type the username to follow: ')
             if self.get_db.search_username(user) is True:
                 self.get_map.add_follow(current_user, user)
-                print(f'✔ Follow user {user}')
+                pprint(f'✔ Follow user {user}')
             else:
-                print(f'User {user} does not exists, please try a valid username')
+                pprint(f'User {user} does not exists, please try a valid username')
             follower_menu(self, current_user)
         elif int(option_selection) == 2:
             user = input('Please type the username to unfollow: ')
@@ -20,11 +26,11 @@ def follower_menu(self, current_user):
         elif int(option_selection) == 3:
             follow_menu(self)
     else:
-        print('Please input between 1 and 3')
+        pprint('Please input between 1 and 3')
 
 def followee_menu(self, current_user):
-    print("Follower list")
-    print(f'\nYour Follower list: {self.get_map.get_follower_list(current_user, "str")} \n')
+    pprint("Follower list")
+    pprint(f'Your Follower list: {self.get_map.get_follower_list(current_user, "str")} \n')
     follow_menu(self)
 
 def follow_menu(self):
@@ -36,5 +42,5 @@ def follow_menu(self):
         elif int(option_selection) == 2:
             followee_menu(self, current_user)
     else:
-        print('Please input between 1 and 3')
+        pprint('Please input between 1 and 3')
 
