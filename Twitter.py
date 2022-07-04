@@ -134,7 +134,7 @@ class User:
 
 class LoginDb:
     def __init__(self) -> None:
-        self.__users = {}
+        self.__users:Dict[tuple, User] = {}
     
     def create_user(self, username, password):
         if self.search_username(username) is False:

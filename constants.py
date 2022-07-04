@@ -11,8 +11,8 @@ class SelectionOptions(TypedDict):
     welcome:list
     login:list
     follow:list
-    follower:str
-    tweet_menu:str
+    follower:list
+    tweet_menu:list
 
 
 OPTION_MENU: OptionMenu = {

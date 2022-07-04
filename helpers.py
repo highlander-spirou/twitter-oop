@@ -2,7 +2,7 @@ from __future__ import annotations
 from copy import deepcopy
 import random
 import string
-from typing import Dict, Union, TYPE_CHECKING, TypedDict
+from typing import Dict, Union, TYPE_CHECKING, Any
 from collections import OrderedDict
 
 if TYPE_CHECKING:
@@ -16,7 +16,7 @@ def create_random():
     return "".join(random_str)
 
 
-def register_method(functions:Union[callable, tuple]):
+def register_method(functions:Union[Any, tuple]):
     def decorator(Class):
         if isinstance(functions, tuple):
             for function in functions:

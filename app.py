@@ -1,6 +1,5 @@
 from Twitter import Twitter, LoginDb, FollowMap, TweetList
 from menu_functions import Menu
-from datetime import datetime
 from test_add_tweet import create_tweets
 
 IS_CONTINUE = True
@@ -24,7 +23,7 @@ if __name__ == '__main__':
     follow_graph.add_follow('nhan', 'nhu')
     follow_graph.add_follow('nhan', 'map')
 
-    create_tweets(tweet_list)
+    create_tweets(tweet_list, 50)
     app.login('nhan')
     Quit = input('Welcome to Twitter 🐦 \n Press Enter to continue \n Press Q to Quit')
     while Quit != "q" and IS_CONTINUE:
