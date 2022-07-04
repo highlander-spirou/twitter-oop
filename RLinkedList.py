@@ -35,8 +35,6 @@ class ReverseLinkedList:
     def __init__(self) -> None:
         self.head: Optional[Node] = None
         self.count: int = 0
-        self.__index = 0
-        self.__traversing_node = None
 
     def is_empty(self):
         return self.head is None
