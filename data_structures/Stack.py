@@ -1,6 +1,4 @@
-from optparse import Option
-from re import I
-from typing import List, Optional
+from typing import Optional, Literal
 
 
 class Node:
@@ -12,7 +10,13 @@ class Node:
     def __str__(self):
         return str(self.data)
 
-class LinkedListIterator:
+    def get_data_attr(self, attr, type_of:Literal['dict', 'other']='dict'):
+        if type_of == 'dict':
+            return self.data.get(attr)
+        else:
+            return getattr(attr, self.data)
+
+class StackIterator:
     def __init__(self, head:Node):
         self.current = head
 
@@ -27,7 +31,7 @@ class LinkedListIterator:
             self.current = self.current.next_node
             return returned_node
 
-class ReverseLinkedList:
+class Stack:
     """
     This class implement a reverse linked list, aka a stack
     that an element only being insert at the top of the list
@@ -53,40 +57,25 @@ class ReverseLinkedList:
             self.count += 1
 
     
-    def traverse_at_n(self, n:int) -> Optional[Node]:
+    def get_nth_node(self, index:int, primer:Optional[Node]=None) -> Optional[Node]:
         """
-        Get the element at nth position
-        with "n" is the index (0-based) 
-        """
-        if n == 0:
-            return self.head
-        elif n < self.count:
-            nth_node = self.head
-            i = 1
-            while i < self.count and i < n+1:
-                if nth_node is not None:
-                    nth_node = nth_node.next_node
-                else: 
-                    break
-                i += 1
-            return nth_node
-        else: 
-            raise Exception("Index out of range")
+        Traverse the stack to the nth node (zero-indexed).
+        Provision of primer node to reduce the time complexity
 
-    def traverse_to_n(self, start:int, stop:int) -> Optional[List[Node]]:
-        returned_list:List[Node] = []
-        i = start
-        current = self.traverse_at_n(start)
-        if current is None:
-            return returned_list if len(returned_list) > 0 else None
-        while i <= stop:
-            returned_list.append(current)
-            i+=1
-            current = current.next_node
-        return returned_list
+        ie. Traverse from head -> 1000th will cost 999, while traverse from 990 to 1000 will cost 9
+        """
+        current_node = self.head if primer is None else primer
+        i = 0
+        while current_node:
+            if i == index:
+                return current_node
+            else:
+                i += 1
+                current_node = current_node.next_node
+
 
     def __iter__(self):
-        return LinkedListIterator(self.head)
+        return StackIterator(self.head)
 
     def __repr__(self):
         nodes = []
@@ -102,7 +91,7 @@ class ReverseLinkedList:
 
 
 if __name__ == '__main__':
-    l1 = ReverseLinkedList()
+    l1 = Stack()
     l1.add(1) # 4
     l1.add(2) # 3
     l1.add(3) # 2
@@ -110,15 +99,14 @@ if __name__ == '__main__':
     l1.add(5) # 0
 
 
-    for i in l1.traverse_to_n(1, 3):
-        print(i)
-    # l2 = ReverseLinkedList()
+   
+    # l2 = Stack()
     # l2.add(2) # 4
     # l2.add(4) # 3
     # l2.add(6) # 2
     # l2.add(8) # 1
 
-    # l3 = ReverseLinkedList()
+    # l3 = Stack()
     # l3.add(1) # 4
     # l3.add(2) # 3
     # l3.add(3) # 2

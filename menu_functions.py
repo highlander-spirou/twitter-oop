@@ -1,15 +1,17 @@
 from getpass import getpass
 from constants import OPTION_MENU, SELECTION_OPTIONS
 from errors import InvalidInput
-from Twitter import Twitter, LoginDb, FollowMap, TweetList
+from Twitter import Twitter, LoginDb, FollowMap, TweetDatabase
 from sign_in_methods.menu_landing import menu_landing
 from sign_in_methods.login_prompt import login_prompt
 from sign_in_methods.follow_menu import follow_menu
 from feeds_menu.feed_landing import feed_landing
-from helpers import register_method, pprint
+from feeds_menu.feed_function import render_tweets
+from helpers import register_method, pprint, BaseClass
+from interfaces import ObserverInterface
 
 class MenuWrapper:
-    def __init__(self, app:Twitter, login_db:LoginDb, follow_map:FollowMap, tweet_list:TweetList) -> None:
+    def __init__(self, app:Twitter, login_db:LoginDb, follow_map:FollowMap, tweet_list:TweetDatabase) -> None:
         self.__app = app
         self.__login_db = login_db
         self.__follow_map = follow_map
@@ -30,10 +32,18 @@ class MenuWrapper:
 
 
 @register_method((menu_landing, login_prompt, follow_menu, feed_landing))
-class Menu(MenuWrapper):
-    def __init__(self, app:Twitter, login_db:LoginDb, follow_map:FollowMap, tweet_list:TweetList) -> None:
+class Menu(MenuWrapper, metaclass=BaseClass):
+    def __init__(self, app:Twitter, login_db:LoginDb, follow_map:FollowMap, tweet_list:TweetDatabase) -> None:
         super().__init__(app, login_db, follow_map, tweet_list)
     
+    def __post_init__(self):
+        self.state:ObserverInterface = {
+                'current_user': self.get_app,
+                'tweet_db': self.get_tweets,
+                'follow_map': self.get_map,
+                'initial_primer': None,
+                'initial_followed_tweets_head': None
+            }
     
     def sign_up_menu(self): 
         pprint('You are in sign up menu')

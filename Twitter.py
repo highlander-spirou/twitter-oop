@@ -3,14 +3,16 @@ from getpass import getpass
 from dataclasses import dataclass, field
 from typing import Dict, Literal, List, Tuple, TypedDict, Optional, Union
 from helpers import create_random, extract_dict_keys, read_attribute
-from Graph import Graph, Edge
-from RLinkedList import ReverseLinkedList, Node
+from data_structures.Graph import Graph, Edge
+from data_structures.Stack import Stack, Node
+from helpers import create_random
 
 class Tweet:
-    def __init__(self, tweet_body, tweet_owner) -> None:
+    def __init__(self, tweet_body, tweet_owner, timestamp:datetime) -> None:
+        self.__tweet_id = create_random()
         self.__tweet_body = tweet_body
         self.__tweet_owner = tweet_owner
-        self.__tweet_id = create_random()
+        self.__create_at = timestamp
 
     @property
     def id(self):
@@ -20,55 +22,13 @@ class Tweet:
     def body(self):
         return self.__tweet_body
 
+    @property
+    def owner(self):
+        return self.__tweet_owner
 
-class TweetNodeInterface(TypedDict):
-    timestamp: datetime
-    tweet: Tweet
-
-class TweetNode(Node):
-    def __init__(self, data:TweetNodeInterface) -> None:
-        super().__init__(data)
-
-    def get_timestamp_id(self, attr:Literal['timestamp', 'id']='timestamp'):
-        if attr == 'timestamp':
-            return extract_dict_keys(self.data)
-        elif attr == 'id':
-            return read_attribute(self.data, 'id')
-
-
-class TweetStack(ReverseLinkedList):
-    def __init__(self) -> None:
-        super().__init__()
-
-    def add(self, data):
-        new_node = TweetNode(data)
-        old_head = None
-        if self.is_empty():
-            self.head = new_node
-            self.count += 1
-        else:
-            old_head = self.head
-            self.head = new_node
-            self.head.next_node = old_head
-            self.count += 1
-
-@dataclass      
-class TweetIndexByOwner:
-    __tweets:Dict[str, TweetStack] = field(default_factory=dict)
-
-    def add_tweet(self, username, timestamp, tweet:Tweet):
-        existed_username = self.__tweets.get(username)
-        if existed_username is None:
-            tweet_stack = TweetStack()
-            tweet_stack.add({timestamp: tweet})
-            self.__tweets[username] = tweet_stack
-        else:
-            existed_username.add({timestamp: tweet})
-
-    def get_tweets(self, name:str):
-        if name in self.__tweets:
-            return self.__tweets.get(name)
-        return
+    @property
+    def timestamp(self):
+        return self.__create_at
 
 
 @dataclass
@@ -79,28 +39,51 @@ class TweetIndexById:
         self.__tweets[id] = tweet
 
     def get_tweet(self, id:str):
-        if id in self.__tweets:
-            return self.__tweets.get(id)
-        return
+        return self.__tweets.get(id)
 
-class TweetList:
+@dataclass
+class TweetIndexByOwner:
+    __tweets:Dict[str, Stack] = field(default_factory=dict)
+
+    def add_to_user(self, username, tweet_id:str):
+        if username in self.__tweets:
+            self.__tweets[username].add(tweet_id)
+        else:
+            self.__tweets[username] = Stack()
+            self.__tweets[username].add(tweet_id)
+
+    def get_user_stack(self, username):
+        return self.__tweets.get(username)
+        
+    pass
+
+class TweetDatabase:
     def __init__(self) -> None:
         self.__owner_indices = TweetIndexByOwner()
         self.__id_indices = TweetIndexById()
 
     def create_tweet(self, username, body, timestamp):
-        new_tweet = Tweet(body, username)
-        self.__owner_indices.add_tweet(username, timestamp, new_tweet)
+        new_tweet = Tweet(body, username, timestamp)
         self.__id_indices.add_tweet(new_tweet.id, new_tweet)
+        self.__owner_indices.add_to_user(username, new_tweet.id)
 
-    def get_tweets_by_name(self, username):
-        return self.__owner_indices.get_tweets(username)
 
-    def get_head_tweet_by_name(self, username) -> Optional[TweetNode]:
-        return self.__owner_indices.get_tweets(username).head
+    def get_paginated_node(self, username, start):
+        """
+        Wrapper function to access get_nth_node() method of __owner_indices
+        """
+        user_stack = self.__owner_indices.get_user_stack(username)
+        return user_stack.get_nth_node(start)
 
-    def get_tweet_by_id(self, id):
+    def get_tweet_from_id(self, id:str):
         return self.__id_indices.get_tweet(id)
+
+    def get_tweet_from_user(self, username:str):
+        return self.__owner_indices.get_user_stack(username)
+
+    
+
+
 
 
 class FollowMap:
@@ -112,9 +95,15 @@ class FollowMap:
           print(f'{followee} start following {follower}')
     
     def get_following_list(self, name):
+        """
+        Get the set of users that you started following
+        """
         return self.__follow_map.get_connected_node(name)
     
     def get_follower_list(self, name, type_of:Literal['set', 'str']='set'):
+        """
+        Get the set of the user following you
+        """
         if type_of == 'set':
             return self.__follow_map.get_connected_to_node(name)
         elif type_of == 'str':

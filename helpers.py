@@ -1,12 +1,11 @@
 from __future__ import annotations
-from copy import deepcopy
 import random
 import string
 from typing import Dict, Union, TYPE_CHECKING, Any
 from collections import OrderedDict
 
 if TYPE_CHECKING:
-    from Twitter import TweetNode
+    from data_structures.Stack import Stack 
 
 def create_random():
     strings = list(string.ascii_letters + string.digits)
@@ -51,30 +50,28 @@ def read_attribute(d:dict, attr):
 
 
 def argmax(li:list) -> int:
-    f = lambda i: li[i]
-    re = max(range(len(li)), key=f)
+    """
+    This function returns index of max item in an iterator
+    """
+    f = lambda i: li[i] # this returns value at index i
+    re = max(range(len(li)), key=f) 
     return re
 
-def argmax_dict(d: dict) -> tuple:
-    return max(d.items(), key = lambda k : k[1])
-
-def get_last_ordered_dict(o_dict:OrderedDict):
-    return next(reversed(o_dict))
-
-def compare_tweet_by_timestamp(d:Dict[str, TweetNode], num_compare = 10):
+def argmax_dict(d: dict) -> str:
     """
-    Compare in num_compare*len(linked_list) time complexity. 
-    To reduce the runtime to n*log(n), use MinHeap datastructure retrieve the ordered list by HeapSort
+    This function returns the key of which value is the highest
     """
-    re = []
-    i = 0
-    while i < num_compare:
-        d1 = {}
-        for index, value in d.items():
-            d1[index] = value.get_timestamp_id()
+    # {'a': 1, 'b': 2} -> returns { 'a':1 }
+    # for key extraction, uses d.keys()
+    # for value extraction, uses d.values()
+    return max(d.keys(), key = lambda k : k[1])
 
-        max_index = argmax_dict(d1)[0]
-        re.append((max_index, d[max_index].get_timestamp_id(), d[max_index].get_timestamp_id('id')))
-        d[max_index] = d[max_index].next_node
-        i += 1
-    return re
+
+
+
+
+class BaseClass(type):
+    def __call__(cls, *args, **kwargs):
+        obj = type.__call__(cls, *args, **kwargs)
+        obj.__post_init__()
+        return obj
